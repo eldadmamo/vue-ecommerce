@@ -1,0 +1,21 @@
+@baseUrl = http://localhost:3000
+
+@urlPath = api
+
+
+###
+
+GET {{baseUrl}}/{{urlPath}}/testing
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+
+###
+
+
+GET {{baseUrl}}/{{urlPath}}/register_user_admin
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
