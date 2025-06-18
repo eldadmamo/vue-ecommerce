@@ -14,8 +14,28 @@ withCredentials: true
 ###
 
 
-GET {{baseUrl}}/{{urlPath}}/register_user_admin
+POST {{baseUrl}}/{{urlPath}}/register
 Content-Type: application/json
 Accept: application/json
 withCredentials: true
+
+{
+    "name": "Eldad",
+    "surnames": "Mamo",
+    "email":"eldadfikre456@gmail.com",
+    "role":"Admin",
+    "password": "123456"
+}
+
+###
+
+POST {{baseUrl}}/{{urlPath}}/login
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+    "email":"eldadfikre456@gmail.com",
+    "password": "123456"
+}
 
