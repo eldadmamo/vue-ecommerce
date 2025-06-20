@@ -1,6 +1,7 @@
 var User = require('../models/registration')
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const config = require('../middlewares/config');
 
 const register_user_admin = async function(req,res){
     try{
@@ -48,7 +49,12 @@ const login_user = async function (req,res){
 
             //set the token to expire in 1 minute
 
-             const token = jwt.sign({id:findUser._id}, "passwordKey");
+            const token = jwt.sign(
+                { id: findUser._id }, 
+                process.env.JWT_SECRET, 
+                { expiresIn: '1h' }
+              );
+              console.log('Generated token:', token);
 
              //remove sensitive information
              const {password, ...userWithoutPassword} = findUser._doc; 

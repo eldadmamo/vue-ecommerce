@@ -25,7 +25,8 @@
                                         </h1>
 
                                     </div>
-                                </div> <!-- / .row -->
+                                </div> 
+                                <!-- / .row -->
                                 <div class="row align-items-center">
                                     <div class="col">
 
@@ -60,7 +61,7 @@
 
                                     <!-- Input -->
                                     <input type="text" class="form-control"
-                                        placeholder="Full name">
+                                        placeholder="Full name" v-model="collaborator.name">
 
                                 </div>
 
@@ -77,7 +78,7 @@
 
                                     <!-- Input -->
                                     <input type="text" class="form-control" 
-                                        placeholder="Last name">
+                                        placeholder="Last name" v-model="collaborator.surnames">
 
                                 </div>
 
@@ -99,11 +100,25 @@
 
                                     <!-- Input -->
                                     <input type="email" class="form-control" 
-                                        placeholder="Email address">
+                                        placeholder="Email address" v-model="collaborator.email">
 
                                 </div>
 
                             </div>
+
+                            <!-- Add this section below the email field -->
+<div class="col-12 col-md-6">
+  <div class="form-group">
+    <label class="form-label">
+      Temporary Password
+    </label>
+    <input 
+      type="password" 
+      class="form-control"
+      placeholder="Set temporary password"
+      v-model="collaborator.password">
+  </div>
+</div>  
 
                             <div class="col-12 col-md-6">
 
@@ -116,7 +131,7 @@
                                     </label>
 
                                     <!-- Input -->
-                                    <select name="" class="form-select" >
+                                    <select name="" class="form-select" v-model="collaborator.role">
                                         <option value="" disabled selected>Select</option>
                                         <option value="Administrator">Administrator</option>
                                         <option value="Salesperson">Salesperson</option>
@@ -132,7 +147,7 @@
                         <hr class="my-5">
 
                         <!-- Button -->
-                        <button type="button" class="btn btn-primary" v-on:click="validar()">
+                        <button type="button" class="btn btn-primary" v-on:click="validator()">
                             Create Collaborator
                         </button>
 
@@ -148,9 +163,111 @@
 <script>
 import Sidebar from '../../components/sidebar.vue'
 import TopNav from '../../components/TopNav'
+import axios from 'axios';
 
 export default {
     name: 'CreateCollaboration',
+
+    data(){
+        return {
+            collaborator: {
+                role: ''
+            }
+        }
+    },
+    methods: {
+        validator(){
+            if(!this.collaborator.name){
+                this.$notify({
+              group:'foo',
+              title: 'Error',
+              text: 'fill all the First Name',
+              type: 'error'
+            })
+          } else if(!this.collaborator.surnames){
+            this.$notify({
+              group:'foo',
+              title: 'Error',
+              text: 'fill all the Last Name',
+              type: 'error'
+            })
+          } else if (!this.collaborator.email){
+            this.$notify({
+              group:'foo',
+              title: 'Error',
+              text: 'fill all the Email Address',
+              type: 'error'
+            })
+          } else if(!this.collaborator.role){
+            this.$notify({
+              group: 'foo',
+              title: 'Error',
+              text: 'fill all the Position',
+              type: 'error'
+            })
+          } else if (!this.collaborator.password) {
+    this.$notify({
+      group: 'foo',
+      title: 'Error',
+      text: 'Please enter a temporary password',
+      type: 'error'
+    })
+  } else {
+            this.create_collaborate();
+          }
+          
+        },
+        create_collaborate() {
+  // Get fresh token and ensure it's properly formatted
+  const freshToken = localStorage.getItem("token")?.trim();
+  
+  if (!freshToken) {
+    this.$notify({
+      group: 'foo',
+      title: 'Error',
+      text: 'No authentication token found',
+      type: 'error'
+    });
+    return;
+  }
+
+  axios.post(this.$url + '/register', this.collaborator, {
+    headers: {
+      'Content-Type': 'application/json',
+      'x-auth-token': freshToken
+    }
+  }).then((response) => {
+    // Handle success
+    this.$notify({
+      group: 'foo',
+      title: 'Success',
+      text: 'Collaborator created successfully!',
+      type: 'success'
+    });
+    this.collaborator = {
+      name: '',
+      surnames: '',
+      email: '',
+      role: '',
+      password: ''
+    };
+    this.$router.push({name: 'collaborator-index'})
+  }).catch((error) => {
+    
+    this.$notify({
+      group: 'foo',
+      title: 'Error',
+      text: error.response?.data?.error || 'Failed to create collaborator',
+      type: 'error'
+    });
+
+    
+  });
+}
+    },
+    mounted(){  
+        
+    },  
     components: {
         Sidebar,
         TopNav

@@ -13,7 +13,7 @@ import LoginView from './views/LoginView.vue';
     </nav> -->
     <!-- <Sidebar/> -->
     <!-- <LoginView/> -->
-    
+     <notifications group="foo"/>
     <router-view/>
   </div>
 </template>
